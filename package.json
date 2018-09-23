@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "format": "prettier-standard app.js routes/**/*.js",
     "start": "node ./bin/www"
   },
   "dependencies": {
@@ -15,5 +16,8 @@
     "morgan": "~1.9.0",
     "passport": "^0.4.0",
     "passport-openidconnect": "0.0.2"
+  },
+  "devDependencies": {
+    "prettier-standard": "^8.0.1"
   }
 }
