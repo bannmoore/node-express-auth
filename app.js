@@ -26,13 +26,19 @@ app.use(auth.session())
 
 // auth routes
 app.use('/login', auth.authenticate())
-app.use('/authorization-code/callback', auth.authenticateWithRedirect())
-app.get('/logout', auth.logout())
+app.use(
+  '/authorization-code/callback',
+  auth.authenticateWithRedirect({
+    failureRedirectUrl: '/error',
+    redirectUrl: '/'
+  })
+)
+app.get('/logout', auth.logout({ redirectUrl: '/' }))
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
 
-app.use('/profile', auth.protected(), (req, res) => {
+app.use('/profile', auth.protected({ loginUrl: '/login' }), (req, res) => {
   res.render('profile', { title: 'Express', user: req.user })
 })
 
