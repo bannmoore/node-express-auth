@@ -1,18 +1,12 @@
 var chai = require('chai')
 var chaiHttp = require('chai-http')
-var createExampleApp = require('./fixtures/example-app')
-var MockOidcStrategy = require('./fixtures/mock-oidc-strategy')
+var exampleApp = require('./fixtures/example-app')
 
 chai.use(chaiHttp)
 
-describe('Auth', function () {
+// TODO: fix failing tests
 
-  var exampleApp
-  before(function () {
-    exampleApp = createExampleApp({
-      strategy: new MockOidcStrategy({ authUrl: '/auth/return' })
-    })
-  })
+describe('Auth', function () {
 
   it('should allow unauthenticated requests to unprotected routes', function (done) {
     chai.request(exampleApp)
