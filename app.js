@@ -27,7 +27,7 @@ app.use(auth.session())
 // auth routes
 app.use('/login', auth.authenticate())
 app.use(
-  '/authorization-code/callback',
+  '/oauth/return',
   auth.authenticateWithRedirect({
     failureRedirectUrl: '/error',
     redirectUrl: '/'
