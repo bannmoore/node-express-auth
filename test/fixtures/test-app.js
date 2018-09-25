@@ -20,4 +20,8 @@ app.get('/logout', auth.logout({ redirectUrl: '/' }))
 app.get('/', (req, res) => res.send('okay'));
 app.get('/protected', auth.protected({ loginUrl: '/login' }), (req, res) => res.send('protected'));
 
+app.use(function (err, req, res, next) {
+  res.status(500).send(err)
+})
+
 module.exports = app

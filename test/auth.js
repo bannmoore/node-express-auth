@@ -41,17 +41,6 @@ describe('Auth', function () {
       })
   })
 
-  it('should redirect to root on /auth/return', function (done) {
-    chai.request('http://localhost:8081')
-      .get('/auth/return')
-      .end((err, res) => {
-        chai.expect(err).to.be.null
-        chai.expect(res).to.have.status(200)
-        chai.expect(res).to.redirect
-        done()
-      })
-  })
-
   it('should set session cookie', function (done) {
     chai.request('http://localhost:8081')
       .get('/')
@@ -68,6 +57,16 @@ describe('Auth', function () {
       .end((err, res) => {
         chai.expect(res).to.have.status(302)
         chai.expect(res).not.to.have.cookie('connect.sid')
+        done()
+      })
+  })
+
+  it('should error when receiving an invalid state on return', function (done) {
+    chai.request('http://localhost:8081')
+      .get('/auth/return?state=invalid-state')
+      .end((err, res) => {
+        chai.expect(res.error).not.to.be.null
+        chai.expect(res).to.have.status(500)
         done()
       })
   })
