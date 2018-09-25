@@ -1,15 +1,27 @@
 var chai = require('chai')
 var chaiHttp = require('chai-http')
-var exampleApp = require('./fixtures/example-app')
 
 chai.use(chaiHttp)
 
-// TODO: fix failing tests
-
 describe('Auth', function () {
 
+  var fakeAuthIssuer, testApp
+  before(function () {
+
+    process.env.OAUTH_ISSUER = 'http://localhost:8080'
+    process.env.OAUTH_CALLBACK_URL = 'http://localhost:8081/auth/return'
+
+    fakeAuthIssuer = require('./fixtures/fake-auth-issuer').listen(8080)
+    testApp = require('./fixtures/test-app').listen(8081)
+  })
+
+  after(function () {
+    fakeAuthIssuer.close()
+    testApp.close()
+  })
+
   it('should allow unauthenticated requests to unprotected routes', function (done) {
-    chai.request(exampleApp)
+    chai.request('http://localhost:8081')
       .get('/')
       .end((err, res) => {
         chai.expect(err).to.be.null
@@ -19,7 +31,7 @@ describe('Auth', function () {
   })
 
   it('should redirect to login on protected routes', function (done) {
-    chai.request(exampleApp)
+    chai.request('http://localhost:8081')
       .get('/protected')
       .end((err, res) => {
         chai.expect(err).to.be.null
@@ -30,7 +42,7 @@ describe('Auth', function () {
   })
 
   it('should redirect to root on /auth/return', function (done) {
-    chai.request(exampleApp)
+    chai.request('http://localhost:8081')
       .get('/auth/return')
       .end((err, res) => {
         chai.expect(err).to.be.null
@@ -41,7 +53,7 @@ describe('Auth', function () {
   })
 
   it('should set session cookie', function (done) {
-    chai.request(exampleApp)
+    chai.request('http://localhost:8081')
       .get('/')
       .end((err, res) => {
         chai.expect(res).to.have.cookie('connect.sid')
@@ -50,7 +62,7 @@ describe('Auth', function () {
   })
 
   it('should destroy cookie and redirect on logout', function (done) {
-    chai.request(exampleApp)
+    chai.request('http://localhost:8081')
       .get('/logout')
       .redirects(0)
       .end((err, res) => {
